@@ -1,4 +1,5 @@
 import re
+import database as db
 
 def isString(_value, _size = 30):
 	#Split the name into all the words
@@ -23,3 +24,23 @@ def isEmail(_email):
 	if not EMAIL_REGEX.match(_email):
 		return (-1,'Invalid email id')
 	return(0,'Success')
+
+def isPassword(_password):
+
+	password_char = re.match(r"[a-zA-Z0-9,\.\_\@\#\$\%\^\&\+\=]",_password)
+
+	if not password_char:
+		return(-1,'Invalid password')
+	else:
+		return(0,'valid password')
+		
+
+
+
+
+
+	# password = raw_input("Enter string to test: ")
+	# if re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', password):
+	# 	return(0,'Success')
+	# else:
+	# 	return(-1,'Invalid password')

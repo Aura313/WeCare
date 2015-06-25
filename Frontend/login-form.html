@@ -16,13 +16,19 @@
     <h2>Login</h2>
     <form method="post">
       <table>
+        
         <tr>
           <td class="label">
-            Username
+            Username/Email
           </td>
           <td>
-            <input type="text" name="username" value="{{username}}">
+            <input type="text" name="username_email" value="">
           </td>
+        <td class = "error">
+        {% if not error_name == 'Success' %}
+            {{error_username_email}}
+          {%endif%}
+        </td>
         </tr>
 
         <tr>
@@ -32,7 +38,13 @@
           <td>
             <input type="password" name="password" value="">
           </td>
-        </tr>
+          <td class = "error">
+          {% if not error_name == 'Success' %}
+            {{error_password}}
+          {%endif%}
+          </td>
+          </tr>
+      
       </table>
 
       <div class="error">

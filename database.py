@@ -48,9 +48,9 @@ class User(ndb.Model):
 			print 'database:User:create_user: ERROR: _username/email not unique'
 			return (-1, 'There already exists an account with this username/email.')
 
-		new_user = User(name = _name , username = _username , password = _password , email = _email , age = _age) #Write this properly
-		
+		new_user = User(name = _name , username = _username , password = _password , email = _email , age = _age)
 		new_user.put()
+		
 		print 'database:User:create_user: Successsfully Registered', new_user.key.id()
 		return (0,'Welcome to WeCare!')
 
@@ -66,15 +66,28 @@ class User(ndb.Model):
 	@classmethod
 	def isUniqueEmail(self,_email):
 		users_email = self.query(User.email == _email).fetch()
-		print 'database:User:isUniqueUsername: ', len(users_email)
+		print 'database:User:isUniqueEmail: ', len(users_email)
 		return not len(users_email) > 0
 
 
 	@classmethod
 	def check_credentials(self,_email_or_username, _password):	#Login
 		
-		users = User.query(ndb.OR( User_username == _email_or_username , User_email = _email_or_username)).fetch()
+		users = self.query(ndb.AND(self.password == _password,
+								ndb.OR(self.username == _email_or_username , 
+								 self.email == _email_or_username))).fetch()
+								  
+
 		
+
+	  #	@@@@@@@@@@@@@@@@@@@@@@@@@@@@     HELP TEXT!! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	  # qry = Article.query(ndb.AND(Article.tags == 'python',
+	  #                           ndb.OR(Article.tags.IN(['ruby', 'jruby']),
+	  #                                  ndb.AND(Article.tags == 'php',
+	  #                                          Article.tags != 'perl'))))
+
+
+
 		#Check if the users list contains something or not
 			#If contains nothing. Then no user exists by this email or username. Ask the client to sign up instead
 			#return (-1, 0)
@@ -82,6 +95,17 @@ class User(ndb.Model):
 		#Else if it the case
 		#user = users[0]
 		
+		if len(users) > 0:
+			#if user_password == _password:
+			return(0,'users')			
+		
+		else:
+			print 'database:User:check_credentials: EmptyList'
+			return(-1,'There are no registered users yet')
+
+
+
+
 		#Check if user.password == _password
 			#If not then return -1 or -2 status, message (invalid credentials)
 

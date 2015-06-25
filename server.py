@@ -32,7 +32,7 @@ class Handler(webapp2.RequestHandler):
     def check_cookies(self, session_id, user_id):
         return True
 
-class MainPage(Handler):
+class MainPage(Handler): #Register
     def get(self):
         self.render("signup-form.html")
 
@@ -51,17 +51,34 @@ class MainPage(Handler):
         
         #Verify the status messages before proceeding
         if name_verify_status < 0 or email_verify_status < 0:
-            self.render("signup-form.html",error_name = name_verify_message, error_email = email_verify_message)
+            self.render("You're registered!",error_name = name_verify_message, error_email = email_verify_message)
             return 
 
         status_code, status_message = db.User.create_user(_name = name , _username = username , _password = password , _email = email , _age = 69)
-        
+        print 'Register Works'
+
 class LoginPage(Handler):
     def get(self):
         self.render("login-form.html")
 
     def post(self):
-        
+        #email_or_username
+        login_id = self.request.get("username")
+        password = self.request.get("password")
+
+        login_id_verify_status, login_id_verify_message = utility.isString(login_id)
+        password_verify_status, password_verify_message = utility.isPassword(password)
+
+        if login_id_verify_status < 0 or password_verify_status < 0:
+            return
+            
+        self.render("You're logged in.",error_username_email = login_id_verify_message, error_password = password_verify_message)
+             
+
+        status_code , status_message = db.User.check_credentials(_email_or_username = login_id , _password = password)
+        print 'Login Works!'
+        #self.redirect("/homepage")
+
         #Take username/email from request
         #Take password from request
 
@@ -81,15 +98,44 @@ class HomePage(Handler):
         session_id = '1'
         user_id = '2'
         if self.check_cookies(session_id, user_id):
-            self.write("You're in :)")
+            self.write("You're in your home")
+
 
         else:
             self.redirect("/login")
+
+        def post(self):
+            self.write("""<label> HomePage <input type = "button" name ="HomePage"></label>""")
+
+class ConditionsPage(Handler):
+    def get(self):
+        self.write("Hi, I'm conditions you're probably suffering with.")
+
+    def post(self):
+        self.write("""<label><input type = "button" name ="Conditions"></label>""")
+
+class TreatmentsPage(Handler):
+    def get(self):
+        self.write("Hi, I'm the treatments you should follow to get fixed!")
+
+    def post(self):
+        self.write("")
+
+class Forums(Handler):
+    def get(self):
+        self.write("Hi , I just might be able to connect with people who are willing to share their experience!Keep posting!")
+    
+    def post(self):
+        self.write("""<label><input type = "button" name ="Forums"></label>""")
 
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                 ('/login', LoginPage),
+                                ('/homepage', HomePage),
+                                ('/conditions', ConditionsPage),
+                                ('/treatments', TreatmentsPage),
+                                ('/forums', Forums)
                                ],
                               debug=True)
 
