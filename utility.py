@@ -1,5 +1,7 @@
 import re
 import database as db
+import random
+import string
 
 def isString(_value, _size = 30):
 	#Split the name into all the words
@@ -33,7 +35,14 @@ def isPassword(_password):
 		return(-1,'Invalid password')
 	else:
 		return(0,'valid password')
+
+def createRandomString(_size = 20):
+	strings = string.printable[:-5]
+	value = ''
+	for i in range(_size):
+		value += random.choice(strings)
 		
+	return value
 
 
 
