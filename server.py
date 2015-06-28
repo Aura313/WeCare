@@ -30,14 +30,14 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_Str(template, **kw))
 
     def check_cookies(self, session_id, user_id):
-        session_id = self.request.get("_sessionid")
-        user_id = self.request.get("_userid")
+        print "check_cookies: session,user = ", session_id, " ", user_id
+        # session_id = self.request.get("session_id")
+        # user_id = self.request.get("_userid")
 
-        status_session_id , message_session_id = utility.createRandomString()
-        status_user_id , message_user_id = utility.createRandomString()
+        # status_session_id = utility.createRandomString()
+        # status_user_id = utility.createRandomString()
 
-
-        return db.CheckSession(_sessionid = session_id, _userid = user_id)
+        return db.User.CheckSession(_sessionid = session_id, _userid = user_id)
 
 class MainPage(Handler): #Register
     def get(self):
@@ -76,22 +76,26 @@ class LoginPage(Handler):
         login_id_verify_status, login_id_verify_message = utility.isString(login_id)
         password_verify_status, password_verify_message = utility.isPassword(password)
               
+        #Sanitize the input (else statement with error message)
 
         status_code , status_message = db.User.CheckCredentials(_email_or_username = login_id , _password = password)
         if status_code == 0:
             session_id = status_message[0]
-            user_id = status_message[0]
+            user_id = status_message[1]
 
+            print 'user id, session_id', user_id , session_id
             #Create cookies out of this
         
             self.response.headers['Content-Type'] = 'text/plain'
-            session_id = self.request.cookies.get('session_id', '0')
-            user_id = self.request.cookies.get('user_id', '1')
-           
-            self.response.headers.add_header('Set-Cookie', 'session_id=%s' , 'user_id=%s' % session_id , user_id)
+            # session_id = self.request.cookies.get('session_id', '0')
+            # user_id = self.request.cookies.get('user_id', '1')
 
-            status_code, status_message = db.User.CreateSession(_sessionid = session_id, _userid = user_id)
-            print "session_id,user_id"
+            self.response.headers.add_header('Set-Cookie', 'session_id=%s'  % session_id)
+            self.response.headers.add_header('Set-Cookie', 'user_id=%s' % user_id)
+
+
+            print 'LoginPage:Post ', session_id , user_id
+            self.redirect('/')
 
         else:
             self.render("login-form.html", error_username_email = status_message)
@@ -114,24 +118,37 @@ class LoginPage(Handler):
 class HomePage(Handler):
     def get(self):
         #Get sessionID and userId from cookies
-        session_id = '1'
-        user_id = '2'
+        session_id = self.request.cookies.get('session_id')
+        user_id = self.request.cookies.get('user_id')
         if self.check_cookies(session_id, user_id):
             self.write("You're in your home")
-
-
         else:
             self.redirect("/login")
 
     def post(self):
             #self.write("""<label> HomePage <input type = "button" name ="HomePage"></label>""")
-        session_id = '1'
-        user_id = '2'
+        session_id = self.request.cookies.get('session_id')
+        user_id = self.request.cookies.get('user_id')
         if self.check_cookies(session_id, user_id):
             self.write("You're in your home")
-
         else:
             self.redirect("/login")
+
+
+class LogoutPage(Handler):
+    def get(self):
+
+        session_id = self.request.cookies.get('session_id')
+        user_id = self.request.cookies.get('user_id')
+
+        #delete cookies
+        #call removesession(userid , sessionid)
+
+
+        self.redirect("/")
+
+
+
 
 class ConditionsPage(Handler):
     def get(self):
@@ -165,6 +182,7 @@ class Forums(Handler):
 app = webapp2.WSGIApplication([('/signup', MainPage),
                                 ('/login', LoginPage),
                                 ('/', HomePage),
+                                ('/logout', LogoutPage),
                                 ('/conditions', ConditionsPage),
                                 ('/treatments', TreatmentsPage),
                                 ('/forums', Forums)

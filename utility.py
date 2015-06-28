@@ -37,7 +37,7 @@ def isPassword(_password):
 		return(0,'valid password')
 
 def createRandomString(_size = 20):
-	strings = string.printable[:-5]
+	strings = string.letters+string.digits
 	value = ''
 	for i in range(_size):
 		value += random.choice(strings)

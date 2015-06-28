@@ -12,21 +12,24 @@ class GroupName(ndb.Model):
 	condition_group_title = ndb.StringProperty(required = True)
 	#diseases_group_title = ndb.StringProperty(required = True)
 
-
+	@classmethod
 	def CreateGroup(self,_user_condition_group_title):
 
-		if not (self.isUniqueUsername(_user_condition_group_title)):
+		if not (self.isUniqueGroup(_user_condition_group_title)): #make is unique group
 			print 'database:GroupName:CreateGroup: ERROR: condition already exists'
 			return (-1, 'There already exists a condition with that name.')
 		
 		new_condition_group_title = GroupName(condition_group_title = _user_condition_group_title)
 		new_condition_group_title.put()
 
-		print 'database:User:CreateGroup: Entered'
-		return (0,'New Conditions Added')
+		print 'database:GroupName:CreateGroup: Entered', _user_condition_group_title
+		return (0,'New Condition group Added')
 	
-
-
+	@classmethod
+	def isUniqueGroup(self, _group_title):
+		users = self.query(GroupName.condition_group_title == _group_title).fetch()
+		return len(users) <  1
+			
 
 class Conditions(ndb.Model):
 	condition_title = ndb.StringProperty(required = True)
@@ -126,6 +129,7 @@ class User(ndb.Model):
 		users = self.query(ndb.OR(self.username == _email_or_username , 
 								 self.email == _email_or_username)).fetch()
 		
+
 		#If none user found
 		if len(users) < 1:
 			return (-1,"No such user exists")
@@ -135,80 +139,64 @@ class User(ndb.Model):
 		if user.password == _password:
 			#His credentials are correct.
 			session_id = self.CreateSession(user)
-			return (0,(session_id, user.key.id()))
+			return (0,(session_id, user.key.urlsafe()))
 		else:
 			#Password do not match
 			return (-2,"Login credentials are incorrect")
 
-								  
-
-		
-
-	 #  #	@@@@@@@@@@@@@@@@@@@@@@@@@@@@     HELP TEXT!! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	 #  # qry = Article.query(ndb.AND(Article.tags == 'python',
-	 #  #                           ndb.OR(Article.tags.IN(['ruby', 'jruby']),
-	 #  #                                  ndb.AND(Article.tags == 'php',
-	 #  #                                          Article.tags != 'perl'))))
-
-
-
-		# #Check if the users list contains something or not
-		# 	#If contains nothing. Then no user exists by this email or username. Ask the client to sign up instead
-		# 	#return (-1, 0)
-
-		# #Else if it the case
-		# #user = users[0]
-		
-		# if len(users) > 0:
-		# 	#if user_password == _password:
-		# 	print 'database:User:CheckCredentials: Found User', users[0]
-		# 	return(0,users[0])			
-		
-		# else:
-		# 	print 'database:User:CheckCredentials: EmptyList'
-		# 	return(-1,'There are no registered users yet')
-
-
-
-
-		# #Check if user.password == _password
-		# 	#If not then return -1 or -2 status, message (invalid credentials)
-
-		# #The credentials match and user should be logged in.
-		# session_id = self.CreateSession(user)
-
-		# return (session_id,user.key.id())
-
-	
-	@classmethod
-	def logout(self, _username ,_sessionid):
-		#for username in User:
-			#delete current active session
-		return
 
 
 	@classmethod
 	def CreateSession(self,_user):
 		#Create a random string of 20 size
+		
 		session_id = utility.createRandomString()
 		_user.active_sessions.append(session_id)
 		_user.put()
-		return session_id.key.id()
+		return session_id
 
 
 	@classmethod
 	def CheckSession(self,_userid,_sessionid):
 		#From the userid, get the user from the DB
+		try:
+			user = ndb.Key(urlsafe = _userid).get()
+		except :
+			print "database:CheckSession: user not found"
+			return False 
 
-		if _sessionid in active_sessions:
-			return True
-		return False 
+		return _sessionid in user.active_sessions
 
 		#If _sessionid exists in its active session,
 			#return true
 
 			#else return false
 		#return True
+
+
+
+	
+	@classmethod
+	def RemoveSession(self, _userid ,_sessionid):
+		#Get user from userid
+		try:
+			user = ndb.Key(urlsafe = _userid).get()
+			print "user is ", user
+
+			user.active_sessions.remove(_sessionid)
+			user.put()
+
+
+
+		# 	if _sessionid.index(""):
+		# 		i = _sessionid.index("")
+		# 		del _sessionid[i]
+		# #in User:
+			#delete current active session
+		except:
+
+			return False
+		return True
 
 	@classmethod
 	def EditProfile(self,_username, _name, _currentpassword, _age , _location, _email):
