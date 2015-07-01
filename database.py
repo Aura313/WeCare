@@ -4,6 +4,7 @@ import hashlib
 import hmac
 from string import letters
 import utility
+import populate as pop
 
 
 from google.appengine.ext import ndb
@@ -102,6 +103,19 @@ class User(ndb.Model):
 		print 'database:User:CreateUser: Successsfully Registered', new_user.key.id()
 		return (0,'Welcome to WeCare!')
 
+
+	@classmethod
+	def CreateAdmin(self, _username , _name, _password, _email, _age):
+
+		admin = User(name = _name , username = _username , password = _password , email = _email , age = _age)
+		admin.put()
+
+		return (True , 'Welcome Admin')
+
+
+
+
+
 	@classmethod
 	def isUniqueUsername(self,_username):
         #Takes in a valid username
@@ -159,12 +173,16 @@ class User(ndb.Model):
 	@classmethod
 	def CheckSession(self,_userid,_sessionid):
 		#From the userid, get the user from the DB
+		
+
 		try:
 			user = ndb.Key(urlsafe = _userid).get()
 		except :
-			print "database:CheckSession: user not found"
+			print "database:CheckSession: user not found" 
 			return False 
-
+		#print "user is -" ,user
+		if user is None: 
+			return False
 		return _sessionid in user.active_sessions
 
 		#If _sessionid exists in its active session,
