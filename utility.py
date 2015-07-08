@@ -45,6 +45,15 @@ def createRandomString(_size = 20):
 	return value
 
 
+def isValidMood(_moods):
+
+	moods = ['I feel Good today!' , 'I am feeling a lot better today.' , 'I am not sure how i feel today.' , 'I am not feeling that well today.', 'I feel horrible today! ']
+
+
+	if _moods in moods:
+		return True
+	else:
+		return False
 
 
 

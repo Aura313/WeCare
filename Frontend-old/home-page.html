@@ -1,0 +1,26 @@
+<html>
+    <head>
+    <title> HOMEPAGE </title>
+    </head>
+
+    <body>
+        <form method = "post">
+            <label>    How you doin'?             </label><br>
+            <br>
+            <textarea  rows="4" cols="50" name="user_post">
+            
+            </textarea> 
+            <br>
+            <br>
+            <input type="submit" name="submit">
+        
+        </form>
+        
+        {% for x in post %}
+		  <div class="post" style="padding:10px; ">
+			<div class = "post_text">{{x.post_text}}</div>
+		  </div>
+	   {% endfor %}
+
+    </body>
+</html>

@@ -1,0 +1,24 @@
+.abc{
+    margin-top: 10px;
+    position: relative;
+    bottom: bottom;
+}
+
+.qaz{
+ 
+    margin-bottom: inherit;
+    width: 70%
+    height: 50px;
+}
+
+
+.container right-align{
+
+    margin-left: 50px;
+}
+
+.blah{
+    align-self: auto;
+    width: 300px;
+    height: 100px;
+}

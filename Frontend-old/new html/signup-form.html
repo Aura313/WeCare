@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<title>We Care</title>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- Custom Theme files -->
+<link href="css/style.css" rel='stylesheet' type='text/css' />
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--webfont-->
+<link href='http://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700,800,900' rel='stylesheet' type='text/css'>
+<script src="js/jquery.easydropdown.js"></script>
+</head>
+<body>
+<div class="header">
+   <div class="header_top">
+      <div class="container">
+             <div class="logo">
+				<h1><a href="/">We Care</a></h1>
+			 </div>
+			 <nav class="navbar navbar-default menu" role="navigation"><h3 class="nav_right"><a href="/"><h1><a href="/">We Care</a></h1></a></h3>
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			    </div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+
+
+            						<ul class="nav navbar-nav menu1">
+            			      	<!--<li class="active"><a href="#home" class="scroll"> <span> </span><i class="menu-border"></i></a></li>-->
+            			      <!--  <li><a href="#about" class="scroll">About us</a></li> -->
+            			      <!--  <li><a href="#benefit" class='scroll'>Benefits</a></li> -->
+            			        <!--<li><a href="#tender" class="scroll">Tender</a></li> -->
+            							<li><a href="#" class="scroll">Helpline</a></li>
+            			        <li><a href="contact.html">Contact</a></li>
+            			       </ul>
+
+            						<!-- Search-->
+            						<form class="navbar-form navbar-left search1" role="search">
+            			        <div class="search2">
+            					  <form>
+            						 <input type="text" value="Search" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+            						 <input type="submit" value="">
+            					  </form>
+            					</div>
+            			       </form>
+
+
+            						<ul class="login">
+            				   	 <li><a href="/login">Login</a></li> 
+            				   	 <div class="clearfix"></div>
+            				   </ul>
+              </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+            <div class="clearfix"></div>
+		 </div>
+	   </div>
+
+       <div class="login_box">
+       	<div class="container">
+       	  <div class="register">
+		  	  <form>
+				 <div class="register-top-grid">
+					<h3>PERSONAL INFORMATION</h3>
+					 <div>
+						<span>Full Name<label>*</label></span>
+						<input type="text" name ="name">
+						{% if not error_name == 'Success' %}
+            				{{error_name}}
+          				{%endif%}
+					 </div>
+           <div>
+            <span>User Name<label>*</label></span>
+            <input type="text" name="username">
+            {{error_username}}
+           </div>
+					  <div>
+						 <span>Email Address<label>*</label></span>
+						 <input type="text" name="email">
+						 {{error_email}}
+					 </div>
+          <div> Male or Female?<br>
+                <input type="radio" name="sex" value="male">Male <br>
+                <input type="radio" name="sex" value="female">Female<br>
+          </div>
+          <div>
+            Sign up as:<br>
+                  <input type="checkbox" name="signup type" value="html">Care giver<br>
+                  <input type="checkbox" name="signup type" value="php">Patient<br>
+                  <input type="checkbox" name="signup type" value="c">Researcher<br>
+                   <input type="checkbox" name="signup type" value="c">Doctor<br>
+
+
+          </div>
+
+					 <div class="clearfix"> </div>
+					   <a class="news-letter" href="#">
+						 <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>Sign Up for Newsletter</label>
+					   </a>
+					 </div>
+				     <div class="register-bottom-grid">
+						    <h3>LOGIN INFORMATION</h3>
+							 <div>
+								<span>Password<label>*</label></span>
+								<input type="password" name="password">
+								{{error_password}}
+							 </div>
+							 <div>
+								<span>Confirm Password<label>*</label></span>
+								<input type="password" name="verify">
+								{{error_verify}}
+							 </div>
+					 </div>
+				</form>
+				<div class="clearfix"> </div>
+				<div class="register-but">
+				   <form>
+					   
+             <input type="submit" value="submit">
+
+					   <div class="clearfix"> </div>
+				   </form>
+				</div>
+		   </div>
+       </div>
+   </div>
+   <div class="footer">
+   	<div class="container">
+   	   <div class="col-md-6">
+
+		      <div class="copy">
+			    <p>&copy; DA-IICT </p>
+		    </div>
+		</div>
+		<div class="col-md-6 footer_right">
+			<p>Quick Contact</p>
+			<span class="email"><a href="malito:mail@demolink.org">mail(at)cancer.com</a></span>
+
+		</div>
+   	</div>
+   </div>
+</body>
+</html>

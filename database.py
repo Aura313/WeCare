@@ -16,7 +16,7 @@ class GroupName(ndb.Model):
 	@classmethod
 	def CreateGroup(self,_user_condition_group_title):
 
-		if not (self.isUniqueGroup(_user_condition_group_title)): #make is unique group
+		if not 	(self.isUniqueGroup(_user_condition_group_title)): #make is unique group
 			print 'database:GroupName:CreateGroup: ERROR: condition already exists'
 			return (-1, 'There already exists a condition with that name.')
 		
@@ -30,12 +30,46 @@ class GroupName(ndb.Model):
 	def isUniqueGroup(self, _group_title):
 		users = self.query(GroupName.condition_group_title == _group_title).fetch()
 		return len(users) <  1
+
+	@classmethod
+	def populate(self):
+		group_titles = pop.get_groups()
+		for group in group_titles:
+			if self.isUniqueGroup(_group_title = group):
+				self.CreateGroup(_user_condition_group_title = group)
+
+	@classmethod
+	def getKeyFromName(self,_group_title):
+		users = self.query(GroupName.condition_group_title == _group_title).fetch()
+		if len(users) > 0:
+			return users[0].key		#Maybe brackets not required.
 			
 
 class Conditions(ndb.Model):
 	condition_title = ndb.StringProperty(required = True)
-	condition_group_title = ndb.KeyProperty(kind = GroupName)
+	condition_group_key = ndb.KeyProperty(kind = GroupName)
    ## patients_with_condition_count = ndb.IntegerProperty()
+
+   	@classmethod
+	def CreateCondition(self,_user_condition_title, _condition_group_key):
+
+		if not 	(self.isUniqueCondition(_user_condition_title)): #make is unique group
+			print 'database:Conditions:CreateCondition: ERROR: condition already exists'
+			return (-1, 'There already exists a condition with that name.')
+		
+		new_condition_title = Conditions(condition_title = _user_condition_title, condition_group_key = _condition_group_key)
+		new_condition_title.put()
+
+		print 'database:Conditions:CreateCondition: Entered', _user_condition_title
+		return (0,'New Conditions Added')
+
+
+   	@classmethod
+	def isUniqueCondition(self, _condition_title):
+		users = self.query(Conditions.condition_title == _condition_title).fetch()
+		return len(users) <  1
+
+
 
   	@classmethod
   	def conditionsSearch(self , _condition_title , _condition_group_title):
@@ -57,18 +91,28 @@ class Conditions(ndb.Model):
 		
 
 
+	@classmethod
+	def populate(self):
+
+		condition_titles = pop.get_conditions()
+
+		for condition in condition_titles:
+			condition_name = condition[0]
+			condition_group = condition[1]
+
+			key = GroupName.getKeyFromName(_group_title = condition_group)
+
+			conditions = self.CreateCondition(_user_condition_title = condition_name , _condition_group_key = key)
 
 
-   	# @classmethod
-   	# def search(self,_user_condition):
-   	# 	return
+   
 
 class Treatments(ndb.Model):
 	treatment_title = ndb.StringProperty()
 
 	@classmethod
-   	def search(self,_user_treatment):
-   		return
+	def search(self,_user_treatment):
+		return True
 
 
 class User(ndb.Model):
@@ -135,11 +179,6 @@ class User(ndb.Model):
 	@classmethod
 	def CheckCredentials(self,_email_or_username, _password):	#Login
 		
-		# users = self.query(ndb.AND(self.password == _password,
-		# 						ndb.OR(self.username == _email_or_username , 
-		# 						 self.email == _email_or_username))).fetch()
-
-		#Users contain a list of users by the same username as passed to this function
 		users = self.query(ndb.OR(self.username == _email_or_username , 
 								 self.email == _email_or_username)).fetch()
 		
@@ -185,12 +224,6 @@ class User(ndb.Model):
 			return False
 		return _sessionid in user.active_sessions
 
-		#If _sessionid exists in its active session,
-			#return true
-
-			#else return false
-		#return True
-
 
 
 	
@@ -233,16 +266,45 @@ class User(ndb.Model):
    	def search(self,_name,_username):
    		return
 
-
+   	@classmethod
+   	def getEntityByKey(self,_user_id):
+   		#This expects only a key. Not a urlsafe, or an ID
+   		return _user_id.get()
 
 class Posts(ndb.Model):
     post_text = ndb.StringProperty()
     post_time = ndb.DateTimeProperty(auto_now_add = True)
     post_mood = ndb.StringProperty()
-    user = ndb.KeyProperty(kind= User)
+    user_id= ndb.KeyProperty(kind= User)
     #post_up 
     #post_down
 
+    @classmethod
+    def CreatePosts(self, _post_text , _post_mood, _user_id ):
+
+    	if not utility.isValidMood(_post_mood):
+    		print "database.Posts.CreatePosts: Not a valid mood", _post_mood
+    		return(-1, 'Not a valid mood.')
+
+    	user_key = ndb.Key(urlsafe = _user_id)
+    	print "database.Posts.CreatePosts: User %s has posted %s." % (user_key, _post_text)
+
+
+    	new_post = Posts(post_text = _post_text, post_mood = _post_mood, user_id = user_key)
+    	new_post.put()
+
+    	return(0 ,'Successsfully posted')
+
+    @classmethod
+    def getPostsForUser(self , _user_id):
+    	user_key = ndb.Key(urlsafe = _user_id)
+    	
+    	posts = self.query().fetch()
+
+    	print "database:Posts:getPostsForUser: Query found."
+    	print posts
+    	return posts
+    	
 
 class Crisis(ndb.Model):
 	crisis_name = ndb.StringProperty()

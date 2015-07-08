@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="materialize/css/qwe.css"  media="screen,projection"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+
+        
+    </head>
+
+    <body>
+      <nav>
+    <div class="nav-wrapper">
+      <form>
+        <div class="input-field">
+          <input id="search" type="search" required>
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+          
+          <ul id="nav-mobile" class="right hide-on-down row" style="width:60%">
+                  <li> 
+                      
+                  <form class="center">
+                      <div class="input-field">
+                          <input id="search" type="search" required>
+                          <label for="search"><i class="material-icons">search</i></label>
+                          
+                      </div>
+                  </form>
+
+                      
+                    
+                  </li>
+                <li><a href="badges.html waves-light" class="right">Components</a></li>
+                <li><a href="collapsible.html" class="right">JavaScript</a></li>
+              </ul>
+      </form>
+    </div>
+  </nav>
+
+
+<script>
+    
+        function showSearchBar() {
+            toHide = document.getElementById("default");
+            toShow = document.getElementById("search");
+            toShow.style.display = "block";
+            toHide.style.display = "none";
+        }
+    
+    </script>
+    </body>
+    
+</html>

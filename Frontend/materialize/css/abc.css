@@ -1,0 +1,114 @@
+.input-field input[type="search"] {
+    display: block;
+    line-height: inherit;
+    padding-left: 4rem;
+    width: calc(100% - 4rem);
+}
+
+input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
+    background-color: transparent;
+    border-width: medium medium 1px;
+    border-style: none none solid;
+    border-color: -moz-use-text-color -moz-use-text-color #9E9E9E;
+    -moz-border-top-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    border-image: none;
+    border-radius: 0px;
+    outline: medium none;
+    height: 3rem;
+    width: 100%;
+    font-size: 1rem;
+    margin: 0px 0px 15px;
+    padding: 0px;
+    box-shadow: none;
+    box-sizing: content-box;
+    transition: all 0.3s ease 0s;
+}
+
+.material-icons right{
+    margin-left: 100px;
+}
+    
+nav .input-field input {
+    height: 100%;
+    font-size: 1.2rem;
+    border: medium none;
+    padding-left: 2rem;
+}
+
+input[type="search"] {
+    box-sizing: content-box;
+}
+
+
+input {
+    line-height: normal;
+}
+
+
+.row .col.m7 {
+    width: 58.3333%;
+    margin-left: 0px;
+}
+
+.row .col {
+    float: left;
+    box-sizing: border-box;
+    padding: 0px 0.75rem;
+}
+
+.card .card-image {
+    position: relative;
+    max-height: 300px;
+}
+
+.waves-block {
+    display: block;
+}
+
+.waves-effect {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    -moz-user-select: none;
+    vertical-align: middle;
+    z-index: 1;
+    will-change: opacity, transform;
+    transition: all 0.3s ease-out 0s;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+    transition-delay: 0s;
+}
+
+
+.card .card-image img {
+    border-radius: 2px 2px 0px 0px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    position: relative;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 40%
+}
+
+.img {
+    border: 0px none;
+}
+
+.*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.waves-effect {
+    cursor: pointer;
+}

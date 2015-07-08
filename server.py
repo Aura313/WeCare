@@ -65,11 +65,38 @@ class MainPage(Handler): #Register
         
         #Verify the status messages before proceeding
         if name_verify_status < 0 or email_verify_status < 0:
-            self.render("You're registered!",error_name = name_verify_message, error_email = email_verify_message)
+            self.render("signup-form.html", error_name = name_verify_message, error_email = email_verify_message)
             return 
 
         status_code, status_message = db.User.CreateUser(_name = name , _username = username , _password = password , _email = email , _age = 69)
         print 'Register Works'
+        self.redirect('/login')
+
+
+
+# from google.appengine.api import mail
+
+# class ConfirmUserSignup(webapp2.RequestHandler):
+#     def post(self):
+#         user_address = self.request.get("_email")
+
+#         if not mail.is_email_valid(user_address):
+#             print "enter a valid address"
+
+#         else:
+#             confirmation_url = createNewUserConfirmation(self.request)
+#             sender_address = "Example.com Support <support@example.com>"
+#             subject = "Confirm your registration"
+#             body = """
+# Thank you for creating an account! Please confirm your email address by
+# clicking on the link below:
+
+# %s
+# """ % confirmation_url
+
+#             mail.send_mail(sender_address, user_address, subject, body)
+
+
 
 class LoginPage(Handler):
     def get(self):
@@ -116,27 +143,36 @@ class HomePage(Handler):
         #Get sessionID and userId from cookies
         session_id = self.request.cookies.get('session_id')
         user_id = self.request.cookies.get('user_id')
-        
-        #new@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        # if user_id[0] == []:
-        #     self.redirect("/signup")
-        # else:
-        #    self.redirect("/")
-        # #new@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    
         if self.check_cookies(session_id, user_id):
-            self.write("You're in your home")
-        else:
-            self.redirect("/login")
+            
 
-        
+            posts = db.Posts.getPostsForUser(_user_id = user_id)
+            temp_user = db.User.getEntityByKey(posts[0].user_id)
+            print "server:HomePage:get userfound = ", temp_user.name
+            
+            self.render("home-page.html", post = posts)
+        else:
+            self.render("landing-page.html")
+
+
+
     def post(self):
             #self.write("""<label> HomePage <input type = "button" name ="HomePage"></label>""")
         session_id = self.request.cookies.get('session_id')
         user_id = self.request.cookies.get('user_id')
+
         if self.check_cookies(session_id, user_id):
-            self.write("You're in your home")
+            user_posts = self.request.get("user_post") #add user_mood
+
+            post = db.Posts.CreatePosts(_post_text = user_posts , _post_mood = "I am feeling a lot better today.", _user_id = user_id)
+            #posts = db.Posts.getPostsForUser(_post_text = user_posts , _post_mood = "I am feeling a lot better today.", _user_id = user_id)
+            print post
+            print "HomePage:Posts Let's see if this works."
+        #add search 
         else:
             self.redirect("/login")
+
 
 
 class LogoutPage(Handler):
@@ -146,37 +182,18 @@ class LogoutPage(Handler):
         user_id = self.request.cookies.get('user_id')
 
         #delete cookies
+        db.User.RemoveSession(_userid = user_id,_sessionid = session_id)
+        self.response.headers.add_header('Set-cookie','user_id = %s'%str(""))
+        self.response.headers.add_header('Set-cookie','session_id = %s'%str(""))
+
+
+
+        #self.response.headers.add_header("Set-Cookie", "access_token=deleted; Expires=Thu, 01-Jan-1970 00:00:00 GMT")
+        #should this work? 
         #call removesession(userid , sessionid)
 
 
         self.redirect("/")
-
-class AdminRegister(Handler):
-    def get(self):
-        self.render("signup-form.html")
-
-
-    def post(self):
-        # name = self.request.get("name")
-        # username = self.request.get("username")
-        # password = self.request.get("password")
-        # verify_password = self.request.get("verify_password")
-        # email = self.request.get("email")
-        # age = self.request.get("age")
-
-        # name_verify_status, name_verify_message = utility.isString(name)
-        # email_verify_status, email_verify_message = utility.isEmail(email)
-
-
-        
-        # #Verify the status messages before proceeding
-        # if name_verify_status < 0 or email_verify_status < 0:
-        #     self.render("You're registered!",error_name = name_verify_message, error_email = email_verify_message)
-        #     return 
-
-        # status_code, status_message = db.User.CreateUser(_name = TanyaShah , _username = aura , _password = qwerty , _email = _email , _age = 20)
-        # print 'Admin Register Works'
-        return True
 
 class AdminLogin(Handler):
 
@@ -184,44 +201,20 @@ class AdminLogin(Handler):
         self.render("admin-login.html")
 
     def post(self):
-#         login_id = self.request.get("admin_name")
-#         password = self.request.get("password")
+        login_id = self.request.get("admin_name")
+        password = self.request.get("password")
 
-#         login_id_verify_status, login_id_verify_message = utility.isString(login_id)
-#         password_verify_status, password_verify_message = utility.isPassword(password)
-              
-        
+        if login_id == "tanya" and password == "banana":
+            db.GroupName.populate()
+            db.Conditions.populate()
+            print "Server:AdminLogin: Control Got Back Here"
 
-#         status_code , status_message = db.User.CheckCredentials(_email_or_username = login_id , _password = password)
-#         if status_code == 0:
-#             session_id = status_message[0]
-#             user_id = status_message[1]
+# class PopulateDatabase(Handler):
+#     def get(self):
+#         self.write("Hi, populate.")
 
-#             print 'user id, session_id', user_id , session_id
-#             #Create cookies out of this
-        
-#             self.response.headers['Content-Type'] = 'text/plain'
-#             # session_id = self.request.cookies.get('session_id', '0')
-#             # user_id = self.request.cookies.get('user_id', '1')
-
-#             self.response.headers.add_header('Set-Cookie', 'session_id=%s'  % session_id)
-#             self.response.headers.add_header('Set-Cookie', 'user_id=%s' % user_id)
-
-
-#             print 'AdminLoginPage:Post ', session_id , user_id
-#             self.redirect('/populate')
-
-# #         else:
-# #             self.render("login-form.html", error_admin = status_message)
-        
-            return True
-
-class PopulateDatabase(Handler):
-    def get(self):
-        self.write("Hi, populate.")
-
-    def post(self):
-        return True
+#     def post(self):
+#         return True
 
 
 
@@ -257,10 +250,8 @@ class Forums(Handler):
 app = webapp2.WSGIApplication([('/signup', MainPage),
                                 ('/login', LoginPage),
                                 ('/', HomePage),
-                                ('/logout', LogoutPage),
-                                ('/adminregister', AdminRegister),
+                                ('/logout', LogoutPage),    
                                 ('/adminlogin', AdminLogin),
-                                ('/populate' , PopulateDatabase),
                                 ('/conditions', ConditionsPage),
                                 ('/treatments', TreatmentsPage),
                                 ('/forums', Forums)
